@@ -1,29 +1,29 @@
-import { LoremIpsum } from 'lorem-ipsum'
+import { LoremIpsum } from 'lorem-ipsum';
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
     max: 8,
-    min: 4
+    min: 4,
   },
   wordsPerSentence: {
     max: 16,
-    min: 4
-  }
-})
+    min: 4,
+  },
+});
 
 const makeFakeId = function (length) {
-  var result = ''
+  var result = '';
   var characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  var charactersLength = characters.length
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result
-}
+  return result;
+};
 
 const createCustomerMessage = function () {
-  const dt = new Date()
+  const dt = new Date();
   const dtString = `${(dt.getMonth() + 1).toString().padStart(2, '0')}/${dt
     .getDate()
     .toString()
@@ -33,7 +33,7 @@ const createCustomerMessage = function () {
     .padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt
     .getSeconds()
     .toString()
-    .padStart(2, '0')}`
+    .padStart(2, '0')}`;
 
   return {
     id: makeFakeId(8),
@@ -47,12 +47,12 @@ const createCustomerMessage = function () {
     refKey: '000',
     resultCode: '200',
     errorCode: null,
-    messageDt: dtString
-  }
-}
+    messageDt: dtString,
+  };
+};
 
 const createUserMessage = function () {
-  const dt = new Date()
+  const dt = new Date();
   const dtString = `${(dt.getMonth() + 1).toString().padStart(2, '0')}/${dt
     .getDate()
     .toString()
@@ -62,7 +62,7 @@ const createUserMessage = function () {
     .padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt
     .getSeconds()
     .toString()
-    .padStart(2, '0')}`
+    .padStart(2, '0')}`;
 
   return {
     id: makeFakeId(8),
@@ -76,12 +76,12 @@ const createUserMessage = function () {
     refKey: '000',
     resultCode: '200',
     errorCode: null,
-    messageDt: dtString
-  }
-}
+    messageDt: dtString,
+  };
+};
 
 const createSystemMessage = function () {
-  const dt = new Date()
+  const dt = new Date();
   const dtString = `${(dt.getMonth() + 1).toString().padStart(2, '0')}/${dt
     .getDate()
     .toString()
@@ -91,7 +91,7 @@ const createSystemMessage = function () {
     .padStart(2, '0')}:${dt.getMinutes().toString().padStart(2, '0')}:${dt
     .getSeconds()
     .toString()
-    .padStart(2, '0')}`
+    .padStart(2, '0')}`;
   const randomNumber = parseInt(Math.random() * 10);
 
   return {
@@ -100,34 +100,34 @@ const createSystemMessage = function () {
     speaker: 'SYSTEM',
     messageType: 'TEXT',
     status: 'SUCCESS',
-    systemActivityType: randomNumber % 2 === 1 ? 'DATE_CHANGE':'USER_BLOCKED',
+    systemActivityType: randomNumber % 2 === 1 ? 'DATE_CHANGE' : 'USER_BLOCKED',
     messageText: lorem.generateWords(2),
     refKey: '000',
     resultCode: '200',
     errorCode: null,
-    messageDt: dtString
-  }
-}
+    messageDt: dtString,
+  };
+};
 
 export const createMockMessage = function (size) {
-  let result = []
+  const result = [];
   for (let i = 0; i < size; i++) {
-    const randomNumber = parseInt(Math.random() * 100)
+    const randomNumber = parseInt(Math.random() * 100);
     switch (randomNumber % 3) {
       case 0: {
-        result.push(createCustomerMessage())
-        break
+        result.push(createCustomerMessage());
+        break;
       }
       case 1: {
-        result.push(createUserMessage())
-        break
+        result.push(createUserMessage());
+        break;
       }
       case 2: {
-        result.push(createSystemMessage())
-        break
+        result.push(createSystemMessage());
+        break;
       }
     }
   }
 
-  return result
-}
+  return result;
+};

@@ -16,14 +16,14 @@
 }
 
 .container.user {
-  align-self: flex-end; 
+  align-self: flex-end;
   margin-right: 16px;
 }
 
 .container .name {
   font-size: 12px;
   margin-bottom: 2px;
-  color:#80808F;
+  color: #80808f;
 }
 
 .container .message {
@@ -33,13 +33,13 @@
 }
 
 .container.customer .message {
-  color:#1B283F;
-  border:1px solid #E5EAEE;
+  color: #1b283f;
+  border: 1px solid #e5eaee;
 }
 
 .container.user .message {
   align-self: flex-end;
-  background-color: #3699FF;
+  background-color: #3699ff;
 }
 
 .container.user .message .subName {
@@ -49,29 +49,28 @@
   color: white;
 }
 
-.container .message .content .text{
+.container .message .content .text {
   font-size: 14px;
   white-space: pre-wrap;
   word-break: break-all;
   word-wrap: break-word;
 }
 
-.container.user .message .content .text{
+.container.user .message .content .text {
   color: white;
 }
 
-.container .message .content .image{
+.container .message .content .image {
   width: 100%;
   border-radius: 4px;
   cursor: pointer;
 }
 
-.container .message .content .file{
+.container .message .content .file {
   cursor: pointer;
 }
 
-.container .message .content .file .text{
+.container .message .content .file .text {
   text-decoration: underline;
   color: blue;
 }
-

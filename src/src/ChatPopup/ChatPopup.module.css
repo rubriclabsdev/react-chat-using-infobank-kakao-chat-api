@@ -1,7 +1,6 @@
-
 .container {
   position: relative;
-  width:360px;
+  width: 360px;
   height: calc(100vh - 100px);
   flex: 0 0 360px;
   width: 360px;
@@ -10,14 +9,14 @@
   flex-direction: column;
   background-color: white;
   border-radius: 8px 8px 0px 0px;
-  border: 1px solid #E5EAEE;
-  filter: drop-shadow(0 4px 11px rgba(0,0,0,0.5));
-  margin-left:16px;
+  border: 1px solid #e5eaee;
+  filter: drop-shadow(0 4px 11px rgba(0, 0, 0, 0.5));
+  margin-left: 16px;
 }
 
 .container .iconButton {
-  width:24px;
-  height:24px;
+  width: 24px;
+  height: 24px;
 }
 
 .container .iconButton * {
@@ -29,22 +28,22 @@
   width: 100%;
   height: 48px;
   display: flex;
-  padding:0 16px;
+  padding: 0 16px;
   justify-content: space-between;
   align-items: center;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.03);
   border-radius: 8px 8px 0px 0px;
 }
 
-.container .header .name{
+.container .header .name {
   font-size: 14px;
   line-height: 20.72px;
 }
 
 .container .content {
-  width:100%;
-  flex:1;
+  width: 100%;
+  flex: 1;
   margin-top: 48px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -61,44 +60,44 @@
 }
 
 .container .content::-webkit-scrollbar-thumb {
-  width:6px;
+  width: 6px;
   background-color: rgba(0, 0, 0, 0.38);
   border-radius: 3px;
 }
 
 .container .footer {
-  width:100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  background: #FFFFFF;
+  background: #ffffff;
   position: relative;
 }
 
-.container .footer .ingText p{
+.container .footer .ingText p {
   font-size: 12px;
-  color:#80808F;
-  margin-right:3px;
+  color: #80808f;
+  margin-right: 3px;
 }
 
 .container .footer .toolbar {
   filter: drop-shadow(0px -4px 4px rgba(0, 0, 0, 0.03));
-  width:100%;
-  height:44px;
-  background: #F9FAFB;
-  border-top: 1px solid #E5EAEE;
-  border-bottom: 1px solid #E5EAEE;
+  width: 100%;
+  height: 44px;
+  background: #f9fafb;
+  border-top: 1px solid #e5eaee;
+  border-bottom: 1px solid #e5eaee;
   display: flex;
   align-items: center;
   padding: 0px 16px;
-  gap:10px;
+  gap: 10px;
 }
-.container .footer .toolbar .imageInput{
-  width:0;
+.container .footer .toolbar .imageInput {
+  width: 0;
 }
 
 .container .footer .chatInputArea {
-  width:100%;
-  padding:0px 16px;
+  width: 100%;
+  padding: 0px 16px;
   display: flex;
 }
 
@@ -106,7 +105,7 @@
   padding: 0;
   margin: 16px 0;
   line-height: 20.72px;
-  flex:1;
+  flex: 1;
   resize: none; /* 사용자 임의 변경 불가 */
   border: none;
   outline-width: 0;
@@ -118,13 +117,13 @@
 }
 
 .container .footer .chatInputArea .chatInput::-webkit-scrollbar-thumb {
-  width:6px;
+  width: 6px;
   background-color: rgba(0, 0, 0, 0.38);
   border-radius: 3px;
 }
 
 .container .footer .chatInputArea .chatInput::placeholder {
-  color: #B5B5C3;
+  color: #b5b5c3;
 }
 
 .container .footer .chatInputArea .submit {
@@ -133,27 +132,27 @@
   appearance: none;
   border: none;
   border-radius: 6px;
-  width:52px;
-  height:36px;
-  background-color: #E5EAEE;
-  color: #B5B5C3;
+  width: 52px;
+  height: 36px;
+  background-color: #e5eaee;
+  color: #b5b5c3;
   margin-left: 7px;
   margin-top: 9px;
 }
 
 .container .footer .chatInputArea .submit.enable {
-  background-color: #3699FF;
+  background-color: #3699ff;
   color: white;
   cursor: pointer;
 }
 
-.container .footer .ingText{
-  width:100%;
+.container .footer .ingText {
+  width: 100%;
   height: 24px;
-  display: flex;  
+  display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding:0px 16px;
+  padding: 0px 16px;
   margin-bottom: 4px;
 }
 
@@ -161,13 +160,13 @@
   display: none;
   width: calc(100% - 32px);
   margin: 0px 16px;
-  height:30px;
+  height: 30px;
   top: -46px;
   border-radius: 6px;
   box-sizing: border-box;
   position: absolute;
   background-color: white;
-  border:1px solid black;
+  border: 1px solid black;
 }
 
 .container .footer .newMessageBar.active {

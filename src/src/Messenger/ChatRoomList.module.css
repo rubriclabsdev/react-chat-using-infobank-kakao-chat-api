@@ -1,7 +1,7 @@
 .container {
-  width:100%;
-  flex:1;
-  background-color: #E5EAEE;
+  width: 100%;
+  flex: 1;
+  background-color: #e5eaee;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -12,7 +12,7 @@
 }
 
 .container::-webkit-scrollbar-thumb {
-  width:6px;
+  width: 6px;
   background-color: rgba(0, 0, 0, 0.38);
   border-radius: 3px;
 }

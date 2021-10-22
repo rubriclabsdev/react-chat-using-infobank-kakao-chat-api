@@ -1,34 +1,33 @@
 .container {
   display: flex;
   flex-direction: column;
-  width:100%;
+  width: 100%;
   height: 93px;
   background-color: white;
-  padding:14px 16px;
+  padding: 14px 16px;
   cursor: pointer;
 }
 
-
 .container:hover {
-  background-color: #E5EAEE;
+  background-color: #e5eaee;
 }
 
 .container .header {
   display: flex;
-  width:100%;
+  width: 100%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
 }
 
-.container .header .name{
+.container .header .name {
   font-size: 16px;
   line-height: 23.68px;
 }
 
-.container .header .date{
+.container .header .date {
   font-size: 12px;
-  color: #80808F;
+  color: #80808f;
   line-height: 17.76px;
 }
 
@@ -41,23 +40,23 @@
 }
 
 .container .content .latestMessage {
-  color: #80808F;
+  color: #80808f;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2; /* number of lines to show */
   -webkit-box-orient: vertical;
-  flex:1;
+  flex: 1;
   margin-right: 16px;
   font-size: 13px;
-  line-height: 19.24px; 
+  line-height: 19.24px;
 }
 
 .container .content .newMsgCount {
-  width:fit-content;
-  height:fit-content;
+  width: fit-content;
+  height: fit-content;
   border-radius: 4px;
-  background-color: #F64E60;
+  background-color: #f64e60;
   font-size: 11px;
   color: white;
   padding: 2px 4px;

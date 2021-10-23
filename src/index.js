@@ -8,6 +8,7 @@ import { ChatPopup } from './src/ChatPopup/ChatPopup';
 export const KakaoChat = ({
   connectionHeaders,
   brandId,
+  brandName,
   serverUrl,
   userId,
   ...rest
@@ -61,11 +62,12 @@ export const KakaoChat = ({
   };
 
   return (
-    <div className={cx('main')}>
+    <div className={cx('kakao-using-infobank-main')}>
       <Messenger
         onChatPopupRequest={onChatPopupRequest}
         connectionHeaders={connectionHeaders}
         brandId={brandId}
+        brandName={brandName}
         serverUrl={serverUrl}
       />
       {connectedPopup.map((data) => (
@@ -75,6 +77,7 @@ export const KakaoChat = ({
           key={data.roomId}
           connectionHeaders={connectionHeaders}
           brandId={brandId}
+          brandName={brandName}
           serverUrl={serverUrl}
         />
       ))}

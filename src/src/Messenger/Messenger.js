@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
-import { ChatRoomList } from './ChatRoomList';
 import styles from './Messenger.module.css';
+import { ChatRoomList } from './ChatRoomList';
 import { ReactComponent as MsgIcon } from '../../resources/images/msg-icon.svg';
 import { ReactComponent as ArrowIcon } from '../../resources/images/arrow-icon.svg';
 import { ReactComponent as SearchIcon } from '../../resources/images/search-icon.svg';
@@ -11,11 +11,12 @@ export const Messenger = ({
   onChatPopupRequest,
   connectionHeaders,
   brandId,
+  brandName,
   serverUrl,
   ...props
 }) => {
   const cx = classNames.bind(styles);
-  const [minimized, setIsMinimized] = useState(false);
+  const [minimized, setIsMinimized] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const socketClient = useRef({});
   const [unansweredCount, setUnansweredCount] = useState(0);
@@ -36,10 +37,10 @@ export const Messenger = ({
 
       const isResponseSuccess = response.status >= 200 && response.status < 400;
       if (isResponseSuccess) {
-        console.log(resJson);
+        // console.log(resJson);
         setChatRoomList(sortRoomList(resJson.data));
       } else {
-        console.log(resJson);
+        // console.log(resJson);
         throw new Error(response.status);
       }
     } catch (e) {
@@ -90,7 +91,7 @@ export const Messenger = ({
   return (
     <div className={cx('container', minimized ? 'minimized' : '')}>
       <SockJsClient
-        url="https://influencer-chat.fnf.co.kr/ws"
+        url={`${serverUrl}/ws`}
         topics={[`/sub/brand/${brandId}`]}
         onMessage={onNewChatComming}
         ref={socketClient}
@@ -99,7 +100,7 @@ export const Messenger = ({
       <div className={cx('header')} onClick={onMinimizeIconClicked}>
         <MsgIcon className={cx('msg-icon')} />
         <div className={cx('content')}>
-          <p className={cx('name')}>Discovery</p>
+          <p className={cx('name')}>{brandName}</p>
           {unansweredCount && minimized ? (
             <p className={cx('newMsgCount')}>{`답변대기 ${unansweredCount}`}</p>
           ) : null}

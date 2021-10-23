@@ -30,6 +30,10 @@ export const UserMessage = ({ data, ...props }) => {
 
   const createContent = () => {
     const renderType = status === 'FAILED' ? status : messageType;
+    // console.log("========================")
+    // console.log(`message`,data);
+    // console.log(`status ${status}`);
+    // console.log(`chatFile.fileUrl ${chatFile?.fileUrl}`);
 
     switch (renderType) {
       case 'FAILED': {

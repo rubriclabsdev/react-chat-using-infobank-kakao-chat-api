@@ -17,6 +17,7 @@ const App = () => {
         connectionHeaders={connectHeaders}
         brandId={"1"}
         serverUrl={SERVER_URL}
+        brandName={"민호네"}
       />
     </div>
   ) 

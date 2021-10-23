@@ -72,7 +72,7 @@ export const ChatPopup = ({
         setMessageList(result);
         messageListRef.current = result;
         chatOffset.current = resJson.nextOffset;
-        console.log(result);
+        // console.log(result);
       } else {
         console.log(resJson);
         throw new Error(response.status);
@@ -102,9 +102,8 @@ export const ChatPopup = ({
       );
 
       if (index !== -1) {
-        const newResult = [...messageList];
-        newResult[index].status = message.status;
-        newResult[index].errorMessage = message.errorMessage;
+        let newResult = [...messageList];
+        newResult[index] = message;
 
         setMessageList(newResult);
         messageListRef.current = newResult;
@@ -235,7 +234,7 @@ export const ChatPopup = ({
   return (
     <div className={cx('container')}>
       <SockJsClient
-        url="https://influencer-chat.fnf.co.kr/ws"
+        url={`${serverUrl}/ws`}
         topics={[`/sub/room/${roomId}`, `/sub/room_activity/${roomId}`]}
         onMessage={onNewChatComming}
         ref={socketClient}

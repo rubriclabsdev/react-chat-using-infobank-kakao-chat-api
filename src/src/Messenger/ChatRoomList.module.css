@@ -4,15 +4,8 @@
   background-color: #e5eaee;
   overflow-y: auto;
   overflow-x: hidden;
-}
-
-.container::-webkit-scrollbar {
-  width: 6px;
-  background-color: white; /* or add it to the track */
-}
-
-.container::-webkit-scrollbar-thumb {
-  width: 6px;
-  background-color: rgba(0, 0, 0, 0.38);
-  border-radius: 3px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1b283f;
 }

@@ -1,4 +1,23 @@
+.container div {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1b283f;
+}
+
+.container p {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1b283f;
+}
+
 .container {
+  box-sizing: border-box;
   width: 100%;
   padding-top: 16px;
 }

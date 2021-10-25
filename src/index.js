@@ -61,7 +61,6 @@ export const KakaoChat = ({
     setConnectedPopup(newResult);
   };
 
-  console.log(brandId);
   return (
     <div className={cx('kakao-using-infobank-main')}>
       <Messenger

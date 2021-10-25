@@ -15,7 +15,7 @@ const App = () => {
       <div className="bg"></div>
       <KakaoChat
         connectionHeaders={connectHeaders}
-        brandId="1"
+        brandId="31"
         serverUrl={REACT_APP_CHAT_SERVER_URL}
         brandName={'민호네'}
       />

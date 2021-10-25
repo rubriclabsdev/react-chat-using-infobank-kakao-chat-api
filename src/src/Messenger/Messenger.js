@@ -34,7 +34,6 @@ export const Messenger = ({
         headers: connectionHeaders,
       });
       const resJson = await response.json();
-
       const isResponseSuccess = response.status >= 200 && response.status < 400;
       if (isResponseSuccess) {
         // console.log(resJson);
@@ -62,7 +61,14 @@ export const Messenger = ({
     unansweredList.sort(sortByDate);
     answeredList.sort(sortByDate);
 
-    setUnansweredCount(unansweredList.length);
+    const result = unansweredList.reduce((accumulator, value) => {
+      const isValid =
+        value.latestChat.systemActivityType !== 'END_SESSION' ||
+        value.sessionExpired !== false;
+      return isValid ? accumulator + 1 : accumulator;
+    }, 0);
+
+    setUnansweredCount(result || 0);
 
     return [...unansweredList, ...answeredList];
   };

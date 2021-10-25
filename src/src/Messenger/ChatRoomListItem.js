@@ -4,10 +4,12 @@ import styles from './ChatRoomListItem.module.css';
 
 export const ChatRoomListItem = ({ onItemClick, data, ...props }) => {
   const cx = classNames.bind(styles);
+  const isValid =
+    data.unansweredChats &&
+    data.latestChat.systemActivityType !== 'END_SESSION';
 
   const getLatestMessage = () => {
     let latestMessage = data.latestChat.messageText;
-    console.log(data);
 
     switch (data.latestChat.messageType) {
       case 'IMAGE':
@@ -69,9 +71,7 @@ export const ChatRoomListItem = ({ onItemClick, data, ...props }) => {
       </div>
       <div className={cx('content')}>
         <p className={cx('latestMessage')}>{getLatestMessage()}</p>
-        {data.unansweredChats ? (
-          <p className={cx('newMsgCount')}>답변대기</p>
-        ) : null}
+        {isValid ? <p className={cx('newMsgCount')}>답변대기</p> : null}
       </div>
     </div>
   );

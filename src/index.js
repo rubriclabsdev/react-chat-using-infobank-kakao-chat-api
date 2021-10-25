@@ -61,6 +61,7 @@ export const KakaoChat = ({
     setConnectedPopup(newResult);
   };
 
+  console.log(brandId);
   return (
     <div className={cx('kakao-using-infobank-main')}>
       <Messenger
@@ -69,7 +70,6 @@ export const KakaoChat = ({
         brandId={brandId}
         brandName={brandName}
         serverUrl={serverUrl}
-        brandName={brandName}
       />
       {connectedPopup.map((data) => (
         <ChatPopup

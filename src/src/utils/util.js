@@ -148,3 +148,17 @@ export const preventDoubleScroll = (e, dom) => {
     e.preventDefault();
   }
 };
+
+export const isScrollBottom = (element) => {
+  const scrollableArea = element.scrollHeight - element.offsetHeight;
+  // console.log(`SCROLL BT CHECK`);
+  // console.log(`element.scrollHeight ${element.scrollHeight}`);
+  // console.log(`element.offsetHeight ${element.offsetHeight}`);
+  // console.log(`scrollableArea ${scrollableArea}`);
+  // console.log(`element.scrollTop ${element.scrollTop}`);
+  // console.log(
+  //   `scrollableArea - element.scrollTop ${scrollableArea - element.scrollTop}`
+  // );
+
+  return scrollableArea - element.scrollTop == 0;
+};

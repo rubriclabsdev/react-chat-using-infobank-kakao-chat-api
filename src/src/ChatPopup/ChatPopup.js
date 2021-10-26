@@ -10,11 +10,12 @@ import { ReactComponent as CloseIcon } from '../../resources/images/close-icon.s
 import { ReactComponent as ImageIcon } from '../../resources/images/image-icon.svg';
 import { ReactComponent as EmojiIcon } from '../../resources/images/emoji-icon.svg';
 import { ReactComponent as Dots } from '../../resources/images/dotdotdot.svg';
+import { ReactComponent as ToBottomICon } from '../../resources/images/to-bottom-icon.svg';
 import styles from './ChatPopup.module.css';
 import { SystemMessage } from './SystemMessage';
 import { UserMessage } from './UserMessage';
 import SockJsClient from 'react-stomp';
-import { preventDoubleScroll } from '../utils/util';
+import { preventDoubleScroll, isScrollBottom } from '../utils/util';
 
 export const ChatPopup = ({
   onClose,
@@ -32,6 +33,8 @@ export const ChatPopup = ({
   const [inputDisabled, setInputDisabled] = useState(false);
   const [scrollInitialized, setScrollInitialized] = useState(false);
   const [writingUser, setWritingUser] = useState('');
+  const [newMessageBarChat, setNewMessageBarChat] = useState();
+  const [showNewMessageBar, setShowNewMessageBar] = useState(false);
   const messageListRef = useRef([]);
   const contentContainer = useRef(null);
   const chatOffset = useRef(null);
@@ -94,7 +97,7 @@ export const ChatPopup = ({
   };
 
   const onNewChatComming = (message, channelName) => {
-    // console.log("NEW MESSAGE!");
+    // console.log('NEW MESSAGE!');
     // console.log(message);
     // console.log(channelName);
 
@@ -122,6 +125,8 @@ export const ChatPopup = ({
         messageListRef.current = newResult;
       }
     }
+
+    setNewMessageBarChat(message);
   };
 
   const onMessageClicked = () => {
@@ -175,6 +180,12 @@ export const ChatPopup = ({
       // console.log('NEED MORE!!!!!!!!')
       getPreviousMessageList();
     }
+
+    // 스크롤 맨 아래에 닿았을 때 new message bar 보이던게 있으면 없애
+    if (isScrollBottom(e.target)) {
+      setShowNewMessageBar(false);
+      setNewMessageBarChat(null);
+    }
   }
 
   useEffect(() => {
@@ -192,27 +203,29 @@ export const ChatPopup = ({
   }, []);
 
   const checkInputDisabled = () => {
-    // console.log('DISABLED CHECK!');
-    let result = false;
     const lastItem =
       messageList && messageList.length
         ? messageList[messageList.length - 1]
         : null;
-
-    // console.log(lastItem);
-
-    if (
+    const result =
       lastItem &&
       lastItem.speaker === 'SYSTEM' &&
       (lastItem.systemActivityType === 'USER_BLOCKED' ||
-        lastItem.systemActivityType === 'END_SESSION')
-    ) {
-      result = true;
-    }
-    // console.log(result);
+        lastItem.systemActivityType === 'END_SESSION');
 
     setInputDisabled(result);
   };
+
+  useEffect(() => {
+    if (newMessageBarChat) {
+      const scrollableArea =
+        contentContainer.current.scrollHeight -
+        contentContainer.current.offsetHeight;
+      if (contentContainer.current.scrollTop < scrollableArea) {
+        setShowNewMessageBar(true);
+      }
+    }
+  }, [newMessageBarChat, showNewMessageBar]);
 
   useEffect(() => {
     checkInputDisabled();
@@ -232,10 +245,7 @@ export const ChatPopup = ({
     if (isFirstLoad || needToGoBottom) {
       contentContainer.current.scrollTop = Number.MAX_SAFE_INTEGER;
       setScrollInitialized(true);
-
-      if (textareaRef) {
-        textareaRef.current.focus();
-      }
+      textareaRef?.current.focus();
     } else if (previousFirstChild.current) {
       // console.log("MAY BE U LOAD MORE!");
       // console.log(previousFirstChild.current);
@@ -244,7 +254,19 @@ export const ChatPopup = ({
       previousFirstChild.current.scrollIntoView();
       previousFirstChild.current = null;
     }
+
+    const scrollableArea =
+      contentContainer.current.scrollHeight -
+      contentContainer.current.offsetHeight;
+
+    if (contentContainer.current.scrollTop < scrollableArea) {
+      setShowNewMessageBar(true);
+    }
   }, [messageList, scrollInitialized]);
+
+  const hideNewMesageBar = () => {
+    contentContainer.current.scrollTop = Number.MAX_SAFE_INTEGER;
+  };
 
   return (
     <div className={cx('container')}>
@@ -320,7 +342,18 @@ export const ChatPopup = ({
             </>
           )}
         </div>
-        <div className={cx('newMessageBar', false && 'active')} />
+        <div
+          className={cx('newMessageBar', showNewMessageBar && 'active')}
+          onClick={() => hideNewMesageBar()}
+        >
+          <p className={cx('name')}>{newMessageBarChat?.speakerName || ''}</p>
+          <p className={cx('message')}>
+            {newMessageBarChat?.messageText || ''}
+          </p>
+          <div className={cx('toBottomIcon')}>
+            <ToBottomICon />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -8,16 +8,20 @@ const App = () => {
   const connectHeaders = {
     Authorization: `Bearer ${token}`,
   };
-  const { REACT_APP_CHAT_SERVER_URL } = process.env;
+  const {
+    REACT_APP_CHAT_SERVER_URL,
+    REACT_APP_CHAT_BRAND_ID,
+    REACT_APP_CHAT_BRAND_NAME,
+  } = process.env;
 
   return (
     <div className="container">
       <div className="bg"></div>
       <KakaoChat
         connectionHeaders={connectHeaders}
-        brandId="31"
+        brandId={REACT_APP_CHAT_BRAND_ID}
         serverUrl={REACT_APP_CHAT_SERVER_URL}
-        brandName={'민호네'}
+        brandName={REACT_APP_CHAT_BRAND_NAME}
       />
     </div>
   );

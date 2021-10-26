@@ -202,7 +202,39 @@
   box-sizing: border-box;
   position: absolute;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid #e5eaee;
+  box-shadow: 0px 5px 4px 0px #0000000d;
+  align-items: center;
+  padding: 0px 10px;
+  cursor: pointer;
+}
+
+.container .footer .newMessageBar .name {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18.82px;
+  color: #80808f;
+  width: 50px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container .footer .newMessageBar .message {
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20.27px;
+  color: #1b283f;
+  margin: 0px 10px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.container .footer .newMessageBar .toBottomIcon {
+  width: 20px;
+  height: 20px;
 }
 
 .container .footer .newMessageBar.active {

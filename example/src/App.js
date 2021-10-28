@@ -12,6 +12,7 @@ const App = () => {
     REACT_APP_CHAT_SERVER_URL,
     REACT_APP_CHAT_BRAND_ID,
     REACT_APP_CHAT_BRAND_NAME,
+    REACT_APP_CHAT_USER_ID,
   } = process.env;
 
   return (
@@ -22,6 +23,7 @@ const App = () => {
         brandId={REACT_APP_CHAT_BRAND_ID}
         serverUrl={REACT_APP_CHAT_SERVER_URL}
         brandName={REACT_APP_CHAT_BRAND_NAME}
+        userId={REACT_APP_CHAT_USER_ID}
       />
     </div>
   );

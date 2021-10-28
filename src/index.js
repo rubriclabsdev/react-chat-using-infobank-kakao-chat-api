@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './index.css';
 import { Messenger } from './src/Messenger/Messenger';
-import { debounce, rest } from 'lodash';
+import { debounce } from 'lodash';
 import { ChatPopup } from './src/ChatPopup/ChatPopup';
 
 export const KakaoChat = ({
@@ -11,7 +11,7 @@ export const KakaoChat = ({
   brandName,
   serverUrl,
   userId,
-  ...rest
+  ...props
 }) => {
   const [connectedPopup, setConnectedPopup] = useState([]);
   const [maximumPopupCount, setMaximumPopupCount] = useState(0);
@@ -79,6 +79,7 @@ export const KakaoChat = ({
           brandId={brandId}
           brandName={brandName}
           serverUrl={serverUrl}
+          userId={userId}
         />
       ))}
     </div>

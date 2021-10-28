@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
   useState,
+  Fragment,
 } from 'react';
 import { ReactComponent as CloseIcon } from '../../resources/images/close-icon.svg';
 import { ReactComponent as ImageIcon } from '../../resources/images/image-icon.svg';
@@ -16,6 +17,7 @@ import { SystemMessage } from './SystemMessage';
 import { UserMessage } from './UserMessage';
 import SockJsClient from 'react-stomp';
 import { preventDoubleScroll, isScrollBottom } from '../utils/util';
+import { debounce } from 'lodash';
 
 export const ChatPopup = ({
   onClose,
@@ -23,6 +25,7 @@ export const ChatPopup = ({
   connectionHeaders,
   brandId,
   serverUrl,
+  userId,
   ...props
 }) => {
   const { roomId, customerName } = data;
@@ -30,9 +33,9 @@ export const ChatPopup = ({
   const [inputValue, setInputValue] = useState('');
   const [inputHeight, setInputHeight] = useState(22);
   const [messageList, setMessageList] = useState([]);
-  const [inputDisabled, setInputDisabled] = useState(false);
+  const [inputDisabled, setInputDisabled] = useState(true);
   const [scrollInitialized, setScrollInitialized] = useState(false);
-  const [writingUser, setWritingUser] = useState('');
+  const [writingUserMessage, setWritingUserMessage] = useState('');
   const [newMessageBarChat, setNewMessageBarChat] = useState();
   const [showNewMessageBar, setShowNewMessageBar] = useState(false);
   const messageListRef = useRef([]);
@@ -41,11 +44,38 @@ export const ChatPopup = ({
   const socketClient = useRef({});
   const previousFirstChild = useRef(null);
   const textareaRef = useRef(null);
+  const writingUserList = useRef([]);
+
+  const debounceStopWriting = useRef(
+    debounce(() => {
+      const roomActivity = {
+        chatRoomId: roomId,
+        writing: false,
+      };
+      socketClient.current.sendMessage(
+        '/pub/room_activity',
+        JSON.stringify(roomActivity)
+      );
+      console.log('마지막으로 찍은 후 3초 지남!');
+    }, 3000)
+  ).current;
 
   const onInputChange = (e) => {
     const targetHeight = Math.min(e.target.scrollHeight, 126);
     setInputHeight(e.target.value === '' ? 22 : targetHeight);
     setInputValue(e.target.value);
+
+    if (e.target.value !== '') {
+      const roomActivity = {
+        chatRoomId: roomId,
+        writing: true,
+      };
+      socketClient.current.sendMessage(
+        '/pub/room_activity',
+        JSON.stringify(roomActivity)
+      );
+    }
+    debounceStopWriting();
   };
 
   const getPreviousMessageList = async () => {
@@ -102,6 +132,43 @@ export const ChatPopup = ({
     // console.log(channelName);
 
     if (channelName.includes('room_activity')) {
+      const isMe = userId == message.id;
+
+      if (!isMe) {
+        // writing false 면 빼내
+        // writing true 고 isMe 아니면 넣어
+        // console.log(`not me!!!`);
+
+        const targetIndex = writingUserList.current.findIndex(
+          (u) => u.id === message.id
+        );
+        // console.log(`targetIndex  ${targetIndex}`);
+        // console.log(`message.writing  ${message.writing}`);
+
+        if (message.writing && targetIndex === -1) {
+          writingUserList.current = [...writingUserList.current, message];
+        } else if (!message.writing && targetIndex !== -1) {
+          writingUserList.current.splice(targetIndex, 1);
+        }
+        // console.log(`newWritingUserList`);
+        // console.log(writingUserList.current);
+
+        if (writingUserList.current.length > 2) {
+          setWritingUserMessage('여러명이 입력중입니다');
+        } else if (writingUserList.current.length > 0) {
+          let nameList = [];
+          for (
+            let i = 0;
+            i < Math.min(2, writingUserList.current.length);
+            i++
+          ) {
+            nameList.push(writingUserList.current[i].name);
+          }
+          setWritingUserMessage(`${nameList}님이 입력중입니다`);
+        } else {
+          setWritingUserMessage('');
+        }
+      }
     } else {
       const index = messageList.findIndex(
         (prevMsg) => prevMsg.id === message.id
@@ -199,6 +266,14 @@ export const ChatPopup = ({
         preventDoubleScroll(event, contentContainer.current)
       );
       contentContainer.current.removeEventListener('scroll', onScroll);
+      const roomActivity = {
+        chatRoomId: roomId,
+        writing: false,
+      };
+      socketClient.current.sendMessage(
+        '/pub/room_activity',
+        JSON.stringify(roomActivity)
+      );
     };
   }, []);
 
@@ -228,7 +303,6 @@ export const ChatPopup = ({
   }, [newMessageBarChat, showNewMessageBar]);
 
   useEffect(() => {
-    checkInputDisabled();
     // console.log("MESSAGE IS CHANGED!!");
     const { scrollTop, scrollHeight, offsetHeight } = contentContainer.current;
     // console.log(`ScrollTop : ${scrollTop}`);
@@ -245,7 +319,6 @@ export const ChatPopup = ({
     if (isFirstLoad || needToGoBottom) {
       contentContainer.current.scrollTop = Number.MAX_SAFE_INTEGER;
       setScrollInitialized(true);
-      textareaRef?.current.focus();
     } else if (previousFirstChild.current) {
       // console.log("MAY BE U LOAD MORE!");
       // console.log(previousFirstChild.current);
@@ -278,6 +351,11 @@ export const ChatPopup = ({
         headers={connectionHeaders}
         onDisconnect={(e) => {
           console.log(`DISCONNECTED /sub/room_activity/${roomId}`);
+        }}
+        onConnect={(e) => {
+          console.log(`CONNECTED /sub/room_activity/${roomId}`);
+          checkInputDisabled();
+          textareaRef?.current.focus();
         }}
       />
       <div className={cx('header')}>
@@ -335,9 +413,9 @@ export const ChatPopup = ({
           </button>
         </div>
         <div className={cx('ingText')}>
-          {false && (
+          {writingUserMessage.length > 0 && (
             <>
-              <p>{`${writingUser}님이 입력중입니다`}</p>
+              <p>{`${writingUserMessage}`}</p>
               <Dots />
             </>
           )}

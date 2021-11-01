@@ -195,6 +195,7 @@ export const ChatPopup = ({
       }
     }
 
+    updateChatStatus();
     setNewMessageBarChat(message);
   };
 
@@ -334,11 +335,10 @@ export const ChatPopup = ({
     }
   };
 
-  const onSocketConnected = (e) => {
-    console.log(`CONNECTED /sub/room_activity/${roomId}`);
+  const updateStatus = () => {
     const lastItem =
-      messageList && messageList.length
-        ? messageList[messageList.length - 1]
+      messageListRef.current && messageListRef.current.length
+        ? messageListRef.current[messageListRef.current.length - 1]
         : null;
     const result =
       lastItem &&
@@ -346,6 +346,11 @@ export const ChatPopup = ({
       (lastItem.systemActivityType === 'USER_BLOCKED' ||
         lastItem.systemActivityType === 'END_SESSION');
     setChatStatus(result ? 'USERDISCONNECTED' : 'CONNECTED');
+  };
+
+  const onSocketConnected = (e) => {
+    console.log(`CONNECTED /sub/room_activity/${roomId}`);
+    updateStatus();
     textareaRef?.current?.focus();
   };
 

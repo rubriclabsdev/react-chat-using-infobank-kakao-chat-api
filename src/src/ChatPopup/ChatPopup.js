@@ -33,7 +33,6 @@ export const ChatPopup = ({
   const [inputValue, setInputValue] = useState('');
   const [inputHeight, setInputHeight] = useState(22);
   const [messageList, setMessageList] = useState([]);
-  const [inputDisabled, setInputDisabled] = useState(true);
   const [scrollInitialized, setScrollInitialized] = useState(false);
   const [writingUserMessage, setWritingUserMessage] = useState('');
   const [newMessageBarChat, setNewMessageBarChat] = useState();
@@ -45,6 +44,8 @@ export const ChatPopup = ({
   const previousFirstChild = useRef(null);
   const textareaRef = useRef(null);
   const writingUserList = useRef([]);
+  const [chatStatus, setChatStatus] = useState('UNINITIALIZED');
+  const isWriting = useRef(false);
 
   const debounceStopWriting = useRef(
     debounce(() => {
@@ -56,6 +57,7 @@ export const ChatPopup = ({
         '/pub/room_activity',
         JSON.stringify(roomActivity)
       );
+      isWriting.current = false;
       console.log('마지막으로 찍은 후 3초 지남!');
     }, 3000)
   ).current;
@@ -65,7 +67,7 @@ export const ChatPopup = ({
     setInputHeight(e.target.value === '' ? 22 : targetHeight);
     setInputValue(e.target.value);
 
-    if (e.target.value !== '') {
+    if (e.target.value !== '' && !isWriting.current) {
       const roomActivity = {
         chatRoomId: roomId,
         writing: true,
@@ -266,30 +268,8 @@ export const ChatPopup = ({
         preventDoubleScroll(event, contentContainer.current)
       );
       contentContainer.current.removeEventListener('scroll', onScroll);
-      const roomActivity = {
-        chatRoomId: roomId,
-        writing: false,
-      };
-      socketClient.current.sendMessage(
-        '/pub/room_activity',
-        JSON.stringify(roomActivity)
-      );
     };
   }, []);
-
-  const checkInputDisabled = () => {
-    const lastItem =
-      messageList && messageList.length
-        ? messageList[messageList.length - 1]
-        : null;
-    const result =
-      lastItem &&
-      lastItem.speaker === 'SYSTEM' &&
-      (lastItem.systemActivityType === 'USER_BLOCKED' ||
-        lastItem.systemActivityType === 'END_SESSION');
-
-    setInputDisabled(result);
-  };
 
   useEffect(() => {
     if (newMessageBarChat) {
@@ -341,6 +321,39 @@ export const ChatPopup = ({
     contentContainer.current.scrollTop = Number.MAX_SAFE_INTEGER;
   };
 
+  const setPlaceHolder = () => {
+    switch (chatStatus) {
+      case 'UNINITIALIZED':
+        return '채팅 서버와 연결 중 입니다';
+      case 'CONNECTED':
+        return `${customerName}에게 메시지 보내기`;
+      case 'DISCONNECTED':
+        return '서버와의 연결이 끊켰습니다';
+      case 'USERDISCONNECTED':
+        return '고객과의 상담이 종료되었습니다';
+    }
+  };
+
+  const onSocketConnected = (e) => {
+    console.log(`CONNECTED /sub/room_activity/${roomId}`);
+    const lastItem =
+      messageList && messageList.length
+        ? messageList[messageList.length - 1]
+        : null;
+    const result =
+      lastItem &&
+      lastItem.speaker === 'SYSTEM' &&
+      (lastItem.systemActivityType === 'USER_BLOCKED' ||
+        lastItem.systemActivityType === 'END_SESSION');
+    setChatStatus(result ? 'USERDISCONNECTED' : 'CONNECTED');
+    textareaRef?.current?.focus();
+  };
+
+  const onSocketDisconnected = (e) => {
+    console.log(`DISCONNECTED /sub/room_activity/${roomId}`);
+    setChatStatus('DISCONNECTED');
+  };
+
   return (
     <div className={cx('container')}>
       <SockJsClient
@@ -349,14 +362,8 @@ export const ChatPopup = ({
         onMessage={onNewChatComming}
         ref={socketClient}
         headers={connectionHeaders}
-        onDisconnect={(e) => {
-          console.log(`DISCONNECTED /sub/room_activity/${roomId}`);
-        }}
-        onConnect={(e) => {
-          console.log(`CONNECTED /sub/room_activity/${roomId}`);
-          checkInputDisabled();
-          textareaRef?.current.focus();
-        }}
+        onDisconnect={onSocketDisconnected}
+        onConnect={onSocketConnected}
       />
       <div className={cx('header')}>
         <p className={cx('name')}>{customerName}</p>
@@ -391,18 +398,14 @@ export const ChatPopup = ({
             value={inputValue}
             onChange={onInputChange}
             className={cx('chatInput')}
-            placeholder={
-              inputDisabled
-                ? '상담이 불가능한 채널입니다'
-                : '값을 입력 해 주세요'
-            }
+            placeholder={setPlaceHolder()}
             onKeyPress={(e) => {
               if (e.key == 'Enter' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
                 e.preventDefault();
                 onMessageClicked();
               }
             }}
-            disabled={inputDisabled}
+            disabled={chatStatus !== 'CONNECTED'}
             ref={textareaRef}
           />
           <button

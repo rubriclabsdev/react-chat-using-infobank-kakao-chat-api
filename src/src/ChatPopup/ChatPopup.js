@@ -76,6 +76,17 @@ export const ChatPopup = ({
         '/pub/room_activity',
         JSON.stringify(roomActivity)
       );
+    } else if (e.target.value === '') {
+      const roomActivity = {
+        chatRoomId: roomId,
+        writing: false,
+      };
+      socketClient.current.sendMessage(
+        '/pub/room_activity',
+        JSON.stringify(roomActivity)
+      );
+      isWriting.current = false;
+      console.log('인풋이 없어지니 보낸다');
     }
     debounceStopWriting();
   };
@@ -131,12 +142,12 @@ export const ChatPopup = ({
   const onNewChatComming = (message, channelName) => {
     // console.log('NEW MESSAGE!');
     // console.log(message);
-    // console.log(channelName);
 
     if (channelName.includes('room_activity')) {
       const isMe = userId == message.id;
 
       if (!isMe) {
+        console.log(message);
         // writing false 면 빼내
         // writing true 고 isMe 아니면 넣어
         // console.log(`not me!!!`);
@@ -214,6 +225,7 @@ export const ChatPopup = ({
     // console.log(message);
     // console.log(socketClient.current);
     socketClient.current.sendMessage('/pub/message', JSON.stringify(message));
+    isWriting.current = false;
     setInputValue('');
     setInputHeight(22);
   };
@@ -335,7 +347,7 @@ export const ChatPopup = ({
     }
   };
 
-  const updateStatus = () => {
+  const updateChatStatus = () => {
     const lastItem =
       messageListRef.current && messageListRef.current.length
         ? messageListRef.current[messageListRef.current.length - 1]
@@ -350,7 +362,7 @@ export const ChatPopup = ({
 
   const onSocketConnected = (e) => {
     console.log(`CONNECTED /sub/room_activity/${roomId}`);
-    updateStatus();
+    updateChatStatus();
     textareaRef?.current?.focus();
   };
 

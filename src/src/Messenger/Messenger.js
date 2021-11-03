@@ -94,6 +94,16 @@ export const Messenger = ({
     getChatRoomList();
   }, []);
 
+  const onSocketConnected = (e) => {
+    console.log(e);
+    console.log(`CONNECTED Messenger`);
+  };
+
+  const onSocketDisconnected = (e) => {
+    console.log(e);
+    console.log(`DISCONNECTED Messenger`);
+  };
+
   return (
     <div className={cx('container', minimized ? 'minimized' : '')}>
       <SockJsClient
@@ -102,6 +112,8 @@ export const Messenger = ({
         onMessage={onNewChatComming}
         ref={socketClient}
         headers={connectionHeaders}
+        onDisconnect={onSocketDisconnected}
+        onConnect={onSocketConnected}
       />
       <div className={cx('header')} onClick={onMinimizeIconClicked}>
         <MsgIcon className={cx('msg-icon')} />

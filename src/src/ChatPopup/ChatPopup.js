@@ -68,6 +68,8 @@ export const ChatPopup = ({
     setInputValue(e.target.value);
 
     if (e.target.value !== '' && !isWriting.current) {
+      console.log('쓰는중');
+      isWriting.current = true;
       const roomActivity = {
         chatRoomId: roomId,
         writing: true,
@@ -77,6 +79,7 @@ export const ChatPopup = ({
         JSON.stringify(roomActivity)
       );
     } else if (e.target.value === '') {
+      console.log('다 지움');
       const roomActivity = {
         chatRoomId: roomId,
         writing: false,
@@ -147,13 +150,12 @@ export const ChatPopup = ({
       const isMe = userId == message.id;
 
       if (!isMe) {
-        console.log(message);
         // writing false 면 빼내
         // writing true 고 isMe 아니면 넣어
         // console.log(`not me!!!`);
 
         const targetIndex = writingUserList.current.findIndex(
-          (u) => u.id === message.id
+          (u) => u.sessionId === message.sessionId
         );
         // console.log(`targetIndex  ${targetIndex}`);
         // console.log(`message.writing  ${message.writing}`);
@@ -166,16 +168,25 @@ export const ChatPopup = ({
         // console.log(`newWritingUserList`);
         // console.log(writingUserList.current);
 
-        if (writingUserList.current.length > 2) {
+        const duplicationRemovedList = writingUserList.current.reduce(
+          (previous, current, index, arr) => {
+            const duplicateIndex = previous.findIndex(
+              (d) => d.id === current.id
+            );
+            if (duplicateIndex === -1) {
+              previous.push(current);
+            }
+            return previous;
+          },
+          []
+        );
+
+        if (duplicationRemovedList.length > 2) {
           setWritingUserMessage('여러명이 입력중입니다');
-        } else if (writingUserList.current.length > 0) {
+        } else if (duplicationRemovedList.length > 0) {
           let nameList = [];
-          for (
-            let i = 0;
-            i < Math.min(2, writingUserList.current.length);
-            i++
-          ) {
-            nameList.push(writingUserList.current[i].name);
+          for (let i = 0; i < Math.min(2, duplicationRemovedList.length); i++) {
+            nameList.push(duplicationRemovedList[i].name);
           }
           setWritingUserMessage(`${nameList}님이 입력중입니다`);
         } else {
@@ -207,7 +218,9 @@ export const ChatPopup = ({
     }
 
     updateChatStatus();
-    setNewMessageBarChat(message);
+    if (!channelName.includes('room_activity')) {
+      setNewMessageBarChat(message);
+    }
   };
 
   const onMessageClicked = () => {
@@ -265,8 +278,8 @@ export const ChatPopup = ({
 
     // 스크롤 맨 아래에 닿았을 때 new message bar 보이던게 있으면 없애
     if (isScrollBottom(e.target)) {
-      setShowNewMessageBar(false);
       setNewMessageBarChat(null);
+      setShowNewMessageBar(false);
     }
   }
 
@@ -290,10 +303,12 @@ export const ChatPopup = ({
         contentContainer.current.scrollHeight -
         contentContainer.current.offsetHeight;
       if (contentContainer.current.scrollTop < scrollableArea) {
+        console.log('in show new message bar');
+        console.log(newMessageBarChat);
         setShowNewMessageBar(true);
       }
     }
-  }, [newMessageBarChat, showNewMessageBar]);
+  }, [newMessageBarChat]);
 
   useEffect(() => {
     // console.log("MESSAGE IS CHANGED!!");
@@ -325,7 +340,13 @@ export const ChatPopup = ({
       contentContainer.current.scrollHeight -
       contentContainer.current.offsetHeight;
 
-    if (contentContainer.current.scrollTop < scrollableArea) {
+    if (
+      newMessageBarChat &&
+      contentContainer.current.scrollTop < scrollableArea
+    ) {
+      console.log('in newMessageList, scrollInitialized');
+      console.log(newMessageBarChat);
+
       setShowNewMessageBar(true);
     }
   }, [messageList, scrollInitialized]);
@@ -361,13 +382,16 @@ export const ChatPopup = ({
   };
 
   const onSocketConnected = (e) => {
-    console.log(`CONNECTED /sub/room_activity/${roomId}`);
+    console.log(e);
+    console.log(socketClient.current);
+    console.log(`CONNECTED room ${roomId}`);
     updateChatStatus();
     textareaRef?.current?.focus();
   };
 
   const onSocketDisconnected = (e) => {
-    console.log(`DISCONNECTED /sub/room_activity/${roomId}`);
+    console.log(e);
+    console.log(`DISCONNECTED room ${roomId}`);
     setChatStatus('DISCONNECTED');
   };
 

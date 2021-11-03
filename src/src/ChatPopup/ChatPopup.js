@@ -68,7 +68,6 @@ export const ChatPopup = ({
     setInputValue(e.target.value);
 
     if (e.target.value !== '' && !isWriting.current) {
-      console.log('쓰는중');
       isWriting.current = true;
       const roomActivity = {
         chatRoomId: roomId,
@@ -79,7 +78,6 @@ export const ChatPopup = ({
         JSON.stringify(roomActivity)
       );
     } else if (e.target.value === '') {
-      console.log('다 지움');
       const roomActivity = {
         chatRoomId: roomId,
         writing: false,
@@ -89,7 +87,6 @@ export const ChatPopup = ({
         JSON.stringify(roomActivity)
       );
       isWriting.current = false;
-      console.log('인풋이 없어지니 보낸다');
     }
     debounceStopWriting();
   };
@@ -303,8 +300,6 @@ export const ChatPopup = ({
         contentContainer.current.scrollHeight -
         contentContainer.current.offsetHeight;
       if (contentContainer.current.scrollTop < scrollableArea) {
-        console.log('in show new message bar');
-        console.log(newMessageBarChat);
         setShowNewMessageBar(true);
       }
     }
@@ -344,9 +339,6 @@ export const ChatPopup = ({
       newMessageBarChat &&
       contentContainer.current.scrollTop < scrollableArea
     ) {
-      console.log('in newMessageList, scrollInitialized');
-      console.log(newMessageBarChat);
-
       setShowNewMessageBar(true);
     }
   }, [messageList, scrollInitialized]);
@@ -382,15 +374,12 @@ export const ChatPopup = ({
   };
 
   const onSocketConnected = (e) => {
-    console.log(e);
-    console.log(socketClient.current);
     console.log(`CONNECTED room ${roomId}`);
     updateChatStatus();
     textareaRef?.current?.focus();
   };
 
   const onSocketDisconnected = (e) => {
-    console.log(e);
     console.log(`DISCONNECTED room ${roomId}`);
     setChatStatus('DISCONNECTED');
   };
